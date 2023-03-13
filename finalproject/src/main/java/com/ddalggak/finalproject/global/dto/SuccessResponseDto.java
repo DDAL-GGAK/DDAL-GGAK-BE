@@ -13,7 +13,7 @@ public class SuccessResponseDto {
 
     private final String message;
 
-    ResponseEntity<SuccessResponseDto> toResponseEntity(SuccessCode successCode){
+    public static ResponseEntity<SuccessResponseDto> toResponseEntity(SuccessCode successCode){
         return ResponseEntity
                 .status(successCode.getHttpStatus())
                 .body(SuccessResponseDto.builder()
