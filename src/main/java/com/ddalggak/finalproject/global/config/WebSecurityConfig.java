@@ -17,8 +17,15 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.ddalggak.finalproject.domain.oauth.handler.OAuth2AuthenticationFailureHandler;
+import com.ddalggak.finalproject.domain.oauth.handler.OAuth2AuthenticationSuccessHandler;
+import com.ddalggak.finalproject.domain.oauth.repository.CookieAuthorizationRequestRepository;
+import com.ddalggak.finalproject.domain.oauth.service.CustomOAuth2UserService;
 import com.ddalggak.finalproject.global.jwt.JwtAuthFilter;
+import com.ddalggak.finalproject.global.jwt.JwtExceptionFilter;
 import com.ddalggak.finalproject.global.jwt.JwtUtil;
+import com.ddalggak.finalproject.global.jwt.token.repository.TokenRepository;
+import com.ddalggak.finalproject.global.security.UserDetailsServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +35,10 @@ import lombok.RequiredArgsConstructor;
 @EnableGlobalMethodSecurity(securedEnabled = true) // @Secured 어노테이션 활성화
 public class WebSecurityConfig {
 	private final JwtUtil jwtUtil;
+	private final CustomOAuth2UserService customOAuth2UserService;
+	private final UserDetailsServiceImpl userDetailsService;
+	private final JwtExceptionFilter jwtExceptionFilter;
+	private final TokenRepository tokenRepository;
 
 	//
 	@Bean
@@ -61,20 +72,35 @@ public class WebSecurityConfig {
 			.permitAll()
 			.antMatchers(HttpMethod.GET, "/api/ticket/**")
 			.permitAll()
+			.antMatchers("/oauth2/**")
+			.permitAll()
 			.antMatchers("/ddal-ggak/docs")
 			.permitAll()
 			.antMatchers("/ddal-ggak.html")
 			.permitAll()
-			
-			//health check
-			.antMatchers("/").permitAll()
-			.anyRequest().authenticated()
-			
+			.antMatchers("/?accessToken=*")
+			.permitAll()
+			.and()
+			.oauth2Login()
+			.authorizationEndpoint()
+			.baseUri("/oauth2/authorization/*")
+			.authorizationRequestRepository(cookieAuthorizationRequestRepository())
+			.and()
+			.redirectionEndpoint()
+			.baseUri("/api/login/oauth2/code/*")
+			.and()
+			.userInfoEndpoint()
+			.userService(customOAuth2UserService)
+			.and()
+			.successHandler(oAuth2AuthenticationSuccessHandler())
+			.failureHandler(oAuth2AuthenticationFailureHandler())
+
 			//                .antMatchers(HttpMethod.POST, "/api/logout").permitAll()
 			// JWT 인증/인가를 사용하기 위한 설정
 			.and()
 			.addFilterBefore(new JwtAuthFilter(jwtUtil),
-				UsernamePasswordAuthenticationFilter.class); //    private final JwtUtil jwtUtil; 추가하기!
+				UsernamePasswordAuthenticationFilter.class) //    private final JwtUtil jwtUtil; 추가하기!
+			.addFilterBefore(jwtExceptionFilter, JwtAuthFilter.class);
 		http.cors();
 		// 로그인 사용
 		http.formLogin().permitAll();// 로그인 페이지가 있을 경우 넣기!.loginPage(".api/user/login-page").permitAll();
@@ -85,7 +111,6 @@ public class WebSecurityConfig {
 			.logoutUrl("Logout") // 로그아웃 처리 URL, default: /logout, 원칙적으로 post 방식만 지원
 			.logoutSuccessUrl("/api/auth/login") // 로그아웃 성공 후 이동페이지
 			.deleteCookies("JSESSIONID", "remember-me");
-
 		return http.build();
 	}
 	//    protected void cofigure(HttpSecurity http) throws Exception {
@@ -141,6 +166,36 @@ public class WebSecurityConfig {
 
 		return source;
 	}
+
+	/*
+	 * 쿠키 기반 인가 Repository
+	 * 인가 응답을 연계 하고 검증할 때 사용.
+	 * */
+	@Bean
+	public CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository() {
+		return new CookieAuthorizationRequestRepository();
+	}
+
+	/*
+	 * Oauth 인증 성공 핸들러
+	 * */
+	@Bean
+	public OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler() {
+		return new OAuth2AuthenticationSuccessHandler(
+			jwtUtil,
+			tokenRepository,
+			cookieAuthorizationRequestRepository()
+		);
+	}
+
+	/*
+	 * Oauth 인증 실패 핸들러
+	 * */
+	@Bean
+	public OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler() {
+		return new OAuth2AuthenticationFailureHandler(cookieAuthorizationRequestRepository());
+	}
+
 }
 
 
