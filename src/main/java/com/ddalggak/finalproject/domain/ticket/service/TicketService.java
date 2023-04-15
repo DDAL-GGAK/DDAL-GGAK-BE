@@ -49,6 +49,12 @@ public class TicketService {
 		TicketRequestDto ticketRequestDto) {
 		//1. task가 존재하는지 확인
 		Task task = validateTask(ticketRequestDto.getTaskId());
+		//1.5 ticket expiredAt의 유효성 검증
+		if (ticketRequestDto.getTicketExpiredAt() != null &&
+			task.getExpiredAt() != null &&
+			ticketRequestDto.getTicketExpiredAt().isBefore(task.getExpiredAt())) {
+			throw new IllegalArgumentException("티켓의 만료일은 task의 만료일보다 빠를 수 없습니다.");
+		}
 		//2. 유효성 검증
 		if (!(task.getProject().getProjectLeader().equals(user.getEmail()) ||
 			task.getTaskLeader().equals(user.getEmail()) ||
@@ -176,7 +182,7 @@ public class TicketService {
 		return ok(ListWithTicketStatus);
 	}
 
-	// ticket에 라벨 부여
+	// ticket에 라벨 부여 todo 라벨값 0들어오면 라벨삭제
 	@Transactional
 	public ResponseEntity<Map<TicketStatus, List<TicketResponseDto>>> getLabelForTicket(User user, Long ticketId,
 		TicketLabelRequestDto ticketLabelRequestDto) {
@@ -186,8 +192,12 @@ public class TicketService {
 		)) {
 			throw new CustomException(UNAUTHORIZED_MEMBER);
 		}
-		Label label = validateLabel(ticketLabelRequestDto.labelId);
-		ticket.addLabel(label);
+		if (ticketLabelRequestDto.labelId == 0) {
+			ticket.deleteLabel();
+		} else {
+			Label label = validateLabel(ticketLabelRequestDto.labelId);
+			ticket.addLabel(label);
+		}
 		List<Ticket> ticketList = ticketRepository.findWithTaskId(ticket.getTask().getTaskId());
 		Map<TicketStatus, List<TicketResponseDto>> ListWithTicketStatus = ticketMapper.toDtoMapWithStatus(ticketList);
 		return ok(ListWithTicketStatus);
@@ -215,13 +225,13 @@ public class TicketService {
 	@Transactional
 	public ResponseEntity<Map<TicketStatus, List<TicketResponseDto>>> moveTicketToReview(User user, Long ticketId) {
 		Ticket ticket = validateTicket(ticketId);
-		if (ticket.getStatus().equals(DONE)) {
+		if (!ticket.getUser().getEmail().equals(user.getEmail())) {
+			throw new CustomException(UNAUTHENTICATED_USER);
+		} else if (ticket.getStatus().equals(DONE)) {
 			throw new CustomException(INVALID_TICKET_STATUS);
 		} else if (ticket.getStatus().equals(REVIEW)) {
 			//다른 팀원의 로직상 TODO로 status 줘야 status가 in-progress로 들어간다.
 			ticket.movementTicket(TODO);
-		} else if (!ticket.getUser().getEmail().equals(user.getEmail())) {
-			throw new CustomException(UNAUTHENTICATED_USER);
 		} else {
 			ticket.moveStatusToReview();
 		}

@@ -20,8 +20,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ddalggak.finalproject.domain.project.dto.ProjectBriefResponseDto;
 import com.ddalggak.finalproject.domain.project.dto.ProjectRequestDto;
 import com.ddalggak.finalproject.domain.project.dto.ProjectResponseDto;
+import com.ddalggak.finalproject.domain.project.projectInviteCode.ProjectInviteCodeDto;
 import com.ddalggak.finalproject.domain.project.service.ProjectService;
 import com.ddalggak.finalproject.domain.user.dto.UserResponseDto;
+import com.ddalggak.finalproject.global.aop.ExecutionTimer;
 import com.ddalggak.finalproject.global.security.UserDetailsImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,6 +50,7 @@ public class ProjectController {
 		@Parameter(name = "projectRequestDto", description = "프로젝트 생성에 필요한 정보입니다.", required = true)
 	})
 	@PostMapping("/project")
+	@ExecutionTimer
 	public ResponseEntity<List<ProjectBriefResponseDto>> createProject(
 		@AuthenticationPrincipal UserDetailsImpl userDetails,
 		@RequestPart(value = "thumbnail", required = false) MultipartFile image,
@@ -57,6 +60,7 @@ public class ProjectController {
 
 	@Operation(summary = "프로젝트 전체조회", description = "api for view all projects")
 	@GetMapping("/projects")
+	@ExecutionTimer
 	public ResponseEntity<List<ProjectBriefResponseDto>> viewProjectAll(
 		@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		return projectService.viewProjectAll(userDetails.getUser());
@@ -66,6 +70,7 @@ public class ProjectController {
 		@Parameter(name = "projectId", description = "조회할 프로젝트의 id입니다.", required = true)
 	})
 	@GetMapping("/project/{projectId}")
+	@ExecutionTimer
 	public ResponseEntity<ProjectResponseDto> viewProject(
 		@AuthenticationPrincipal UserDetailsImpl userDetails,
 		@PathVariable Long projectId) {
@@ -82,14 +87,18 @@ public class ProjectController {
 	)
 	@Operation(summary = "프로젝트 참여", description = "api for join project")
 	@PostMapping("/project/{projectId}/join")
+	@ExecutionTimer
 	public ResponseEntity<List<ProjectBriefResponseDto>> joinProject(
 		@AuthenticationPrincipal UserDetailsImpl userDetails,
-		@PathVariable Long projectId) {
-		return projectService.joinProject(userDetails.getUser(), projectId);
+		@PathVariable Long projectId,
+		@RequestBody ProjectInviteCodeDto projectInviteCodeRequestDto) {
+		return projectService.joinProject(userDetails.getUser(), projectId,
+			projectInviteCodeRequestDto.getProjectInviteCode());
 	}
 
 	@Operation(summary = "프로젝트 수정", description = "api for update project")
 	@PostMapping("/project/{projectId}/settings")
+	@ExecutionTimer
 	public ResponseEntity<ProjectResponseDto> updateProject(
 		@AuthenticationPrincipal UserDetailsImpl userDetails,
 		@PathVariable Long projectId,
@@ -108,6 +117,7 @@ public class ProjectController {
 	)
 	@Operation(summary = "프로젝트 삭제", description = "api for delete project")
 	@DeleteMapping("/project/{projectId}")
+	@ExecutionTimer
 	public ResponseEntity<List<ProjectBriefResponseDto>> deleteProject(
 		@AuthenticationPrincipal UserDetailsImpl userDetails,
 		@PathVariable Long projectId) {
@@ -116,6 +126,7 @@ public class ProjectController {
 
 	@Operation(summary = "프로젝트 참여자 조회", description = "api for view project members")
 	@GetMapping("/project/{projectId}/users")
+	@ExecutionTimer
 	public ResponseEntity<List<UserResponseDto>> viewProjectUsers(
 		@AuthenticationPrincipal UserDetailsImpl userDetails,
 		@PathVariable Long projectId) {
@@ -124,6 +135,7 @@ public class ProjectController {
 
 	@Operation(summary = "프로젝트 참여자 삭제", description = "api for delete project member")
 	@DeleteMapping("/project/{projectId}/user/{userId}")
+	@ExecutionTimer
 	public ResponseEntity<List<UserResponseDto>> deleteProjectUser(
 		@AuthenticationPrincipal UserDetailsImpl userDetails,
 		@PathVariable Long projectId,
@@ -131,8 +143,18 @@ public class ProjectController {
 		return projectService.deleteProjectUser(userDetails.getUser(), projectId, userId);
 	}
 
+	@Operation(summary = "프로젝트 초대 코드 생성", description = "api for inviting a user to a project")
+	@PostMapping("/project/{projectId}/inviteCode")
+	@ExecutionTimer
+	public ResponseEntity<?> createInviteCode(
+		@AuthenticationPrincipal UserDetailsImpl userDetails,
+		@PathVariable Long projectId) {
+		return projectService.createInviteCode(userDetails.getUser(), projectId);
+	}
+
 	@Operation(summary = "프로젝트 사용자 초대", description = "api for inviting a user to a project")
 	@PostMapping("/project/{projectId}")
+	@ExecutionTimer
 	public ResponseEntity<?> inviteProjectUser(
 		@AuthenticationPrincipal UserDetailsImpl userDetails,
 		@PathVariable Long projectId,
