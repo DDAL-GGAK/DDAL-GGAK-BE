@@ -24,23 +24,16 @@
 ---
 
 # 🛠️ 프로젝트 아키텍처
-
-![스크린샷 2023-04-15 오후 8.46.33.png](%E1%84%84%E1%85%A1%E1%86%AF%E1%84%81%E1%85%A1%E1%86%A8%20DDAL-GGAK%205d44eae726a0475bbe78e467482db4fd/%25EC%258A%25A4%25ED%2581%25AC%25EB%25A6%25B0%25EC%2583%25B7_2023-04-15_%25EC%2598%25A4%25ED%259B%2584_8.46.33.png)
-
+![Alt Text](https://drive.google.com/uc?export=download&id=103oPx8kR-ckDIvgZw1ss_ihDbNd_5lBh)
 ---
 
-# **⚙** 기술 스택
+# 📚 기술 스택
 
-> ⭐Front-End
-> 
-> 
-> 
-> ⭐Back-End
-> 
-> ⭐Dev Tools
-> 
-> ****
-> 
+> ⭐Front-End<br>
+> <img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=white"> <img src="https://img.shields.io/badge/react query-FF4154?style=for-the-badge&logo=react&logoColor=white"> <img src="https://img.shields.io/badge/styled_components-DB7093?style=for-the-badge&logo=styledcomponents&logoColor=white"> <img src="https://img.shields.io/badge/vercel-000000?style=for-the-badge&logo=vercel&logoColor=white"><img src="https://img.shields.io/badge/reactrouter-CA4245?style=for-the-badge&logo=reactrouter&logoColor=white">  <img src="https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white"> <img src="https://img.shields.io/badge/react_hook_form-EC5990?style=for-the-badge&logo=reacthookform&logoColor=white"> <br><br>
+ ⭐Back-End<br>
+   <img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white"> <img src="https://img.shields.io/badge/spring boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> <img src="https://img.shields.io/badge/spring security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white"> <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"> <img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white"> <img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white"> <img src="https://img.shields.io/badge/amazonaws-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white"> <img src="https://img.shields.io/badge/amazon rds-527FFF?style=for-the-badge&logo=amazonrds&logoColor=white"> <img src="https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white"> <img src="https://img.shields.io/badge/amazon s3-569A31?style=for-the-badge&logo=amazons32&logoColor=white"> <img src="https://img.shields.io/badge/query_dsl-009CE9?style=for-the-badge&logo=querydsl&logoColor=white"> <img src="https://img.shields.io/badge/spring data-6DB33F?style=for-the-badge&logo=springdata&logoColor=white"> <img src="https://img.shields.io/badge/spring framework-6DB33F?style=for-the-badge&logo=springframework&logoColor=white"> <img src="https://img.shields.io/badge/spring webflux-6DB33F?style=for-the-badge&logo=springwebflux&logoColor=white"> <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JsonWebTokens&logoColor=white"> <img src="https://img.shields.io/badge/github actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white"><br><br>
+⭐Dev Tools<br><img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"> <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"> <img src="https://img.shields.io/badge/Visual Studio code-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white"> <img src="https://img.shields.io/badge/IntelliJ-000000?style=for-the-badge&logo=intellij&logoColor=white">
 
 ---
 
