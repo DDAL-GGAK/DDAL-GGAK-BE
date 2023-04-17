@@ -180,7 +180,7 @@ RedisRepoitory는 CRUD repository를 상속하기에 CURD repository가 지원�
 # 👥팀원 git hub
 
 |포지션|이름|깃허브 주소|
-|---|---|---|
+|:---:|---|---|
 |<center>FE</center>|김대현|[https://github.com/pengooseDev](https://github.com/pengooseDev)|
 |<center>FE</center>|박지현|[https://github.com/Taffymark1](https://github.com/Taffymark1)|
 |<center>BE</center>|조영준|[https://github.com/choincnp](https://github.com/choincnp)|
