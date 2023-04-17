@@ -181,9 +181,9 @@ RedisRepoitory는 CRUD repository를 상속하기에 CURD repository가 지원�
 
 |포지션|이름|깃허브 주소|
 |---|---|---|
-|FE|김대현|[https://github.com/pengooseDev](https://github.com/pengooseDev)|
-|FE|박지현|[https://github.com/Taffymark1](https://github.com/Taffymark1)|
-|BE|조영준|[https://github.com/choincnp](https://github.com/choincnp)|
-|BE|박현아|[https://github.com/aihtnyc-h](https://github.com/aihtnyc-h)|
-|BE|박성민|[https://github.com/seongminnnn](https://github.com/seongminnnn)|
+|<center>FE</center>|김대현|[https://github.com/pengooseDev](https://github.com/pengooseDev)|
+|<center>FE</center>|박지현|[https://github.com/Taffymark1](https://github.com/Taffymark1)|
+|<center>BE</center>|조영준|[https://github.com/choincnp](https://github.com/choincnp)|
+|<center>BE</center>|박현아|[https://github.com/aihtnyc-h](https://github.com/aihtnyc-h)|
+|<center>BE</center>|박성민|[https://github.com/seongminnnn](https://github.com/seongminnnn)|
 
