@@ -37,7 +37,7 @@
 ---
 
 # 🛠️ 프로젝트 아키텍처
-![Alt Text](https://drive.google.com/uc?export=download&id=103oPx8kR-ckDIvgZw1ss_ihDbNd_5lBh)
+![Alt Text](https://drive.google.com/uc?id=1yJ5fcrybpu-R1oiQjjJK5SvqYi9Uox0e)
 
 ---
 
