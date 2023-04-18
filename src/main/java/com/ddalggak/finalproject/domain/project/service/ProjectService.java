@@ -10,7 +10,10 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.aspectj.lang.annotation.Aspect;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -40,6 +43,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Aspect
+@Component
 public class ProjectService {
 	private final ProjectMapper projectMapper;
 	private final UserMapper userMapper;
@@ -120,6 +125,7 @@ public class ProjectService {
 		ProjectUser projectUser = ProjectUser.create(project, user);
 		validateDuplicateMember(project, projectUser);
 		project.addProjectUser(projectUser);
+		projectRepository.save(project);
 		List<ProjectBriefResponseDto> result = projectRepository.findProjectAllByUserId(
 			user.getUserId());
 		return ok(result);
@@ -164,7 +170,8 @@ public class ProjectService {
 		} else if (!project.getProjectLeader().equals(user.getEmail())) {
 			throw new CustomException(ErrorCode.UNAUTHENTICATED_USER);
 		}
-		project.getProjectUserList().remove(ProjectUser.create(project, projectUser));
+		project.deleteProjectUser(projectUser);
+		projectRepository.save(project);
 		// 참여중인 유저 목록 리턴
 		List<UserResponseDto> userList = userRepository
 			.getProjectUserFromProjectId(projectId)
@@ -260,6 +267,17 @@ public class ProjectService {
 				"webp"))) {
 				throw new CustomException(ErrorCode.TYPE_MISMATCH);
 			}
+		}
+	}
+
+	@Scheduled(fixedRate = 86400000) // 1일마다 갱신
+	@Transactional
+	public void generateNewProjectInviteCode() {
+		List<Project> projects = projectRepository.findAll();
+		for (Project project : projects) {
+			String newProjectInviteCode = UUID.randomUUID().toString();
+			project.setInviteCode(newProjectInviteCode);
+			projectRepository.save(project);
 		}
 	}
 }

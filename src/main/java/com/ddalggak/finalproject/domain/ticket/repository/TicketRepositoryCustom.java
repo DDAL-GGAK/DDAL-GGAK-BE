@@ -10,6 +10,7 @@ import com.ddalggak.finalproject.domain.ticket.dto.DateTicket;
 import com.ddalggak.finalproject.domain.ticket.dto.TicketResponseDto;
 import com.ddalggak.finalproject.domain.ticket.dto.TicketSearchCondition;
 import com.ddalggak.finalproject.domain.ticket.entity.Ticket;
+import com.ddalggak.finalproject.domain.ticket.entity.TicketStatus;
 
 public interface TicketRepositoryCustom {
 	Optional<Ticket> findWithOrderedComments(Long ticketId);
@@ -21,9 +22,11 @@ public interface TicketRepositoryCustom {
 
 	List<DateTicket> getCompletedTicketCountByDate(TicketSearchCondition condition, Long userId);
 
-	List<Ticket> getTicketByUserId(TicketSearchCondition condition, Long userId);
+	List<Ticket> getTicketByUserId(Long userId);
 
 	Slice<TicketResponseDto> getSlicedTicketCountByDate(TicketSearchCondition condition, Pageable pageable,
 		Long userId);
+
+	List<Ticket> findByStatusAndTaskId(TicketStatus status, Long taskId);
 
 }
