@@ -145,15 +145,18 @@ public class ProjectService {
 		if (!project.getProjectLeader().equals(user.getEmail())) {
 			throw new CustomException(ErrorCode.UNAUTHENTICATED_USER);
 		}
-		fileCheck(image);
-		fileSizeCheck(image);
-		// 기존 이미지 삭제 후 새로운 이미지 업로드
-		if (project.getThumbnail() != null) {
-			s3Uploader.delete(project.getThumbnail());
+		String imageUrl = null;
+		if (image != null) {
+			fileCheck(image);
+			fileSizeCheck(image);
+			// 기존 이미지 삭제 후 새로운 이미지 업로드
+			if (project.getThumbnail() != null) {
+				s3Uploader.delete(project.getThumbnail());
+			}
+			imageUrl = s3Uploader.upload(image, "project");
 		}
-		String imageUrl = s3Uploader.upload(image, "project");
-		// 업로드한 이미지의 url을 바탕으로 update 쿼리, dynamic update 기준 업데이트
 		projectRequestDto.setThumbnail(imageUrl);
+		// 업로드한 이미지의 url을 바탕으로 update 쿼리, dynamic update 기준 업데이트
 		project.update(projectRequestDto);
 		projectRepository.save(project);
 
