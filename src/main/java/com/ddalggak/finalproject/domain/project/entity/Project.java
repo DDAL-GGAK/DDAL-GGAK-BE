@@ -92,7 +92,9 @@ public class Project extends BaseEntity {
 
 	public void update(ProjectRequestDto projectRequestDto) {
 		projectTitle = projectRequestDto.getProjectTitle();
-		thumbnail = projectRequestDto.getThumbnail();
+		if (projectRequestDto.getThumbnail() != null) {
+			thumbnail = projectRequestDto.getThumbnail();
+		}
 	}
 
 	public void deleteProjectUser(User user) {
