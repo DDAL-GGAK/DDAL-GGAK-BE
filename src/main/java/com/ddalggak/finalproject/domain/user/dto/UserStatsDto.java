@@ -25,6 +25,7 @@ public class UserStatsDto {
 	private Double averageDifficulty;
 	private Double averagePriority;
 	private Double totalScore = 0.0d;
+	private Double averageScore = 0.0d;
 
 	@QueryProjection
 	public UserStatsDto(Long id, String email, String nickname, String thumbnail) {
