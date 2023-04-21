@@ -25,11 +25,14 @@ import com.ddalggak.finalproject.domain.project.service.ProjectService;
 import com.ddalggak.finalproject.domain.task.dto.TaskSearchCondition;
 import com.ddalggak.finalproject.domain.user.dto.UserResponseDto;
 import com.ddalggak.finalproject.global.aop.ExecutionTimer;
+import com.ddalggak.finalproject.global.error.ErrorResponse;
 import com.ddalggak.finalproject.global.security.UserDetailsImpl;
 import com.ddalggak.finalproject.global.validation.RequestId;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -45,8 +48,12 @@ public class ProjectController {
 
 	@ApiResponses(
 		value = {
-			@ApiResponse(responseCode = "201", description = "프로젝트 생성 성공"),
-			@ApiResponse(responseCode = "403", description = "권한 없음")
+			@ApiResponse(responseCode = "201", description = "프로젝트 생성 성공",
+				content = @Content(schema = @Schema(implementation = ProjectBriefResponseDto.class))),
+			@ApiResponse(responseCode = "403", description = "권한 없음",
+				content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+			@ApiResponse(responseCode = "404", description = "프로젝트 존재하지 않음",
+				content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
 		})
 	@Operation(summary = "프로젝트 생성", description = "api for creating project", parameters = {
 		@Parameter(name = "projectRequestDto", description = "프로젝트 생성에 필요한 정보입니다.", required = true)
@@ -60,6 +67,16 @@ public class ProjectController {
 		return projectService.createProject(userDetails.getUser(), image, projectRequestDto);
 	}
 
+	@ApiResponses(
+		value = {
+			@ApiResponse(responseCode = "200", description = "프로젝트 전체조회",
+				content = @Content(schema = @Schema(implementation = ProjectBriefResponseDto.class))),
+			@ApiResponse(responseCode = "403", description = "권한 없음",
+				content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+			@ApiResponse(responseCode = "404", description = "프로젝트 존재하지 않음",
+				content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+		}
+	)
 	@Operation(summary = "프로젝트 전체조회", description = "api for view all projects")
 	@GetMapping("/projects")
 	@ExecutionTimer
@@ -68,6 +85,16 @@ public class ProjectController {
 		return projectService.viewProjectAll(userDetails.getUser());
 	}
 
+	@ApiResponses(
+		value = {
+			@ApiResponse(responseCode = "200", description = "프로젝트 단건조회",
+				content = @Content(schema = @Schema(implementation = ProjectResponseDto.class))),
+			@ApiResponse(responseCode = "403", description = "권한 없음",
+				content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+			@ApiResponse(responseCode = "404", description = "프로젝트 존재하지 않음",
+				content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+		}
+	)
 	@Operation(summary = "프로젝트 단건조회", description = "api for view one project", parameters = {
 		@Parameter(name = "projectId", description = "조회할 프로젝트의 id입니다.", required = true)
 	})
@@ -81,10 +108,12 @@ public class ProjectController {
 
 	@ApiResponses(
 		value = {
-			@ApiResponse(responseCode = "200", description = "프로젝트 참여 성공"),
-			@ApiResponse(responseCode = "400", description = "프로젝트 참여 실패 - 이미 있는 사용자"),
-			@ApiResponse(responseCode = "403", description = "프로젝트 참여 실패 - 권한 없음"),
-			@ApiResponse(responseCode = "404", description = "프로젝트 참여 실패(존재하지 않는 프로젝트)")
+			@ApiResponse(responseCode = "200", description = "프로젝트 단건조회",
+				content = @Content(schema = @Schema(implementation = ProjectResponseDto.class))),
+			@ApiResponse(responseCode = "403", description = "권한 없음",
+				content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+			@ApiResponse(responseCode = "404", description = "프로젝트 존재하지 않음",
+				content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
 		}
 	)
 	@Operation(summary = "프로젝트 참여", description = "api for join project")
