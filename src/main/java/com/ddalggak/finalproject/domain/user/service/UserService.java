@@ -108,6 +108,9 @@ public class UserService {
 			.forEach(ticketResponseDto -> {
 				result.addScore(Math.round(ticketResponseDto.getScore() * 100) / 100.0);
 			});
+		if (result.getTotalTicketCount() != 0) {
+			result.setAverageScore(Math.round(result.getTotalScore() / result.getCompletedTicketCount() * 100) / 100.0);
+		}
 		return ok(result);
 	}
 
