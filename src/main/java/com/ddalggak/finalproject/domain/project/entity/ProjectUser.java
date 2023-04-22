@@ -64,6 +64,9 @@ public class ProjectUser {
 
 	@Override
 	public boolean equals(Object obj) {
+		if (obj == null || this.getClass() != obj.getClass()) {
+			return false;
+		}
 		ProjectUser projectUser = (ProjectUser)obj;
 		return this.getUser().getUserId().equals(projectUser.getUser().getUserId());
 	}
