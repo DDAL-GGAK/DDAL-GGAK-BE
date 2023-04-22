@@ -13,7 +13,6 @@ public interface ProjectRepositoryCustom {
 
 	Optional<Project> findProjectByTaskId(Long taskId);
 
-	// ProjectResponseDto findDtoByProjectId(Long projectId);
 	void update(Long projectId, ProjectRequestDto projectRequestDto);
 
 }
