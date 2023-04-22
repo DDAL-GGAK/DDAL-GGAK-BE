@@ -177,7 +177,7 @@ public class ProjectController {
 	@Operation(summary = "프로젝트 초대 코드 생성", description = "api for inviting a user to a project")
 	@PostMapping("/project/{projectId}/inviteCode")
 	@ExecutionTimer
-	public ResponseEntity<?> getInviteCode(
+	public ResponseEntity<String> getInviteCode(
 		@AuthenticationPrincipal UserDetailsImpl userDetails,
 		@PathVariable Long projectId) {
 		return projectService.getInviteCode(userDetails.getUser(), projectId);
@@ -186,7 +186,7 @@ public class ProjectController {
 	@Operation(summary = "프로젝트 사용자 초대", description = "api for inviting a user to a project")
 	@PostMapping("/project/{projectId}/invite")
 	@ExecutionTimer
-	public ResponseEntity<?> inviteProjectUser(
+	public ResponseEntity<List<UserResponseDto>> inviteProjectUser(
 		@AuthenticationPrincipal UserDetailsImpl userDetails,
 		@PathVariable Long projectId,
 		@RequestBody List<String> emails) {
