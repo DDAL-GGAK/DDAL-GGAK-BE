@@ -9,6 +9,7 @@ plugins {
     id 'org.springframework.boot' version '2.7.9'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
     id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+    id 'jacoco'
 }
 jar {
     enabled = false
@@ -33,7 +34,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
-//    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -94,6 +95,10 @@ dependencies {
     implementation 'org.webjars:jquery:3.1.1-1'
     // 엔드포인트 조회
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    //gson
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
+
 }
 
 tasks.named('test') {
@@ -119,7 +124,54 @@ compileQuerydsl {
 clean {
     delete file('src/main/generated')
 }
+//test {
+//     테스트 코드 빌드 제외
+//    enabled = false
+//}
+
+jacocoTestReport {
+    reports {
+        html.enabled true // html 형식으로 볼 수 있다.
+        xml.enabled false
+        csv.enabled false
+    }
+
+    // 아래 afterEvaluate 부분은 리포트를 보여줄 때, 제외하고 싶은 것을 의미한다.
+    // 현재 프로젝트에서 있는 QueryDSL과 룸북의 Builder 어노테이션이 만들어주는 코드를
+    // 테스트하는 것은 의미없으므로 제외해준다.
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, excludes: [
+                    '**/aggregate/Q*', // QueryDSL이 생성하는 엔티티를 제외한다.
+                    '**/*Builder*' // 룸북을 통해 생성된 빌더를 제외한다.
+            ])
+        }))
+    }
+
+    finalizedBy 'jacocoTestCoverageVerification' // 작업 후 여기 있는 task를 실행한다.
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            element = 'CLASS'
+            // 위에서 제외해준 것은 리포트를 표시할 때만 안보여주는 것이므로,
+            // 위에서 제외했어도 검증은 하게 된다.
+            // 빌드 시 검증에 실패하게 되면 빌드가 되지 않으므로 다음과 같이 작성해주자.
+            excludes = [
+                    '**.aggregate.Q*',
+                    '**.*Builder*',
+            ]
+            limit {
+                counter = 'LINE' // 라인 기준이며, 이 외에도 BRANCH, CLASS, METHOD, INSTRUCTION이 있다.
+                value = 'COVEREDRATIO' // 리포트의 커버리지 달성 정도를 %로 표기.
+                minimum = 1.00 // 최소 커버리지 달성 요구 조건. 여기서는 100%를 의미.
+            }
+        }
+    }
+}
+
 test {
-    // 테스트 코드 빌드 제외
-    enabled = false
+    useJUnitPlatform()
+    finalizedBy 'jacocoTestReport'
 }
