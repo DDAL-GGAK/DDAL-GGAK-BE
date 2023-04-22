@@ -68,7 +68,7 @@ public class ProjectService {
 		ProjectUser projectUser = ProjectUser.create(projectUserRequestDto);
 		//2.5 image S3 서버에 업로드 -> 분기처리
 		String imageUrl = null;
-		if (!(image == null)) {
+		if (image != null) {
 			fileCheck(image);
 			fileSizeCheck(image);
 			imageUrl = s3Uploader.upload(image, "project");
@@ -225,7 +225,7 @@ public class ProjectService {
 
 	// 프로젝트 사용자 초대
 	@Transactional
-	public ResponseEntity<?> inviteProjectUser(User user, Long projectId, List<String> emails) {
+	public ResponseEntity<List<UserResponseDto>> inviteProjectUser(User user, Long projectId, List<String> emails) {
 		// 유효성 검증
 		Project project = validateProject(projectId);
 		validateExistMember(project, ProjectUser.create(project, user));
@@ -233,7 +233,7 @@ public class ProjectService {
 		Pattern pattern = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
 		for (String email : emails) {
 			if (!pattern.matcher(email).matches()) {
-				return ResponseEntity.badRequest().body("Invalid email format: " + email);
+				throw new CustomException(INVALID_EMAIL);
 			}
 		}
 		// projectInviteCode 확인 및 생성
@@ -264,7 +264,7 @@ public class ProjectService {
 		}
 	}
 
-	private Project validateProject(Long id) { // todo 로직 만들어서 participant가 3명 이상이면 3명까지만 출력하도록 method 작성
+	private Project validateProject(Long id) {
 		return projectRepository.findById(id).orElseThrow(
 			() -> new CustomException(ErrorCode.PROJECT_NOT_FOUND)
 		);
