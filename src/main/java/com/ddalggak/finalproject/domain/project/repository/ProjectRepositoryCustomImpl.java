@@ -51,5 +51,5 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
 			.set(project.thumbnail, projectRequestDto.thumbnail)
 			.where(project.projectId.eq(projectId))
 			.execute();
-	} //todo 할일 projectTitle, thumbnail 비교해서 다른 점 있으면 update set 하고
+	}
 }
